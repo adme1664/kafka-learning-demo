@@ -14,8 +14,8 @@ public class PersonKafkaProducer {
   private int key = 0;
 
 
-  public PersonKafkaProducer() {
-    kafkaProducer = new KafkaProducer<>(KafkaProperties.producerProperties());
+  public PersonKafkaProducer(KafkaProperties properties) {
+    kafkaProducer = new KafkaProducer<>(properties.producerProperties());
   }
 
   public void send(String value) {

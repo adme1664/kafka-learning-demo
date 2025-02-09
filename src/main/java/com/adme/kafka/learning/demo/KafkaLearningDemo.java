@@ -1,5 +1,6 @@
 package com.adme.kafka.learning.demo;
 
+import com.adme.kafka.learning.demo.commons.utils.KafkaProperties;
 import com.adme.kafka.learning.demo.commons.utils.LocalDateJsonSerializer;
 import com.adme.kafka.learning.demo.persons.adapter.db.PersonDb;
 import com.adme.kafka.learning.demo.persons.adapter.kafka.PersonKafkaConsumer;
@@ -29,9 +30,10 @@ public class KafkaLearningDemo {
 
 
   public KafkaLearningDemo() {
+    KafkaProperties kafkaProperties = new KafkaProperties();
     PersonDb personDb = new PersonDb();
     this.personPort = new PersonGateway(personDb);
-    this.personKafkaProducer = new PersonKafkaProducer();
+    this.personKafkaProducer = new PersonKafkaProducer(kafkaProperties);
     this.personService = new PersonService();
     gson = new GsonBuilder().serializeNulls()
         .registerTypeAdapter(LocalDate.class, new LocalDateJsonSerializer())

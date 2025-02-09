@@ -9,13 +9,11 @@ import com.google.gson.GsonBuilder;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.Collections;
-import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.apache.kafka.common.serialization.StringDeserializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,15 +24,16 @@ public class PersonKafkaConsumer {
   private static final String topic = "persons_5";
   private final PersonPort personPort;
   private final Gson gson;
+  private final KafkaProperties kafkaProperties;
 
   public PersonKafkaConsumer(PersonPort personPort) {
     this.personPort = personPort;
     this.gson = new GsonBuilder().registerTypeAdapter(LocalDate.class,new LocalDateJsonSerializer()).create();
+    kafkaProperties = new KafkaProperties();
   }
 
   public void consume() {
-    Properties properties = KafkaProperties.consumerProperties();
-    try (Consumer<String, String> personConsumer = new KafkaConsumer<>(properties)) {
+    try (Consumer<String, String> personConsumer = new KafkaConsumer<>(kafkaProperties.consumerProperties())) {
       Runtime.getRuntime().addShutdownHook(new Thread(()->{
         logger.info("shutting down consumer...");
         running.set(false);
